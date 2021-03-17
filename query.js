@@ -48,8 +48,12 @@ async function singleQuery(params, rowNumber) {
   const singleQueryResult = res.data.valueRanges[1].values[0];
   
   for (let index = 0; index < singleQueryResult.length; index++) {
-    const column = singleQueryResult[index];
+    var column = singleQueryResult[index];
     const taxonomy = taxonomies[index];
+
+    if(taxonomy == 'isbn'){
+      column = column.replace('[','').replace(']','');
+    }
     
     shapedData[taxonomy] = column;
   }
@@ -79,13 +83,13 @@ async function batchQuery(params) {
       // console.log(index, value[0]);
       if(index === 0){
         taxonomy = value[0].toLowerCase().replace(' ', '_');
-        console.log(taxonomy);
+        // console.log(taxonomy);
       }
 
       if(index !== 0){
         var source = {};
         source[taxonomy] = value[0];
-        source.row_number = index;
+        source.row_number = index + 1;
 
         if(shapedData[index]){
           shapedData[index] = Object.assign(shapedData[index], source);

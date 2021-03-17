@@ -36,9 +36,14 @@ client.on('message', async(msg) => {
   if (bookId) {
     const foundBook = initialData.find( ({book_id}) => book_id == bookId );
     const singleResult = await singleQuery(params, foundBook.row_number);
-    // console.log(singleResult);
+    const cover = new Discord.MessageEmbed().setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
+
     if(singleResult.summary){
-      msg.reply(singleResult.summary);
+      msg.channel.send(singleResult.summary);
+      // msg.channel.send(cover);
+    } else {
+      msg.channel.send(singleResult.title);
+      // msg.channel.send(cover);
     }
   }
 
