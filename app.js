@@ -1,26 +1,23 @@
-const Discord = require('discord.js');
 require('dotenv').config();
+const Discord = require('discord.js');
 const client = new Discord.Client();
+const { query } = require('./query');
+const { message } = require('./message');
+
+
+const params = {
+  spreadsheetId: process.env.SHEET_ID,
+  ranges: 'Books!A:A',
+  includeGridData: true
+};
 
 client.login(process.env.BOT_TOKEN);
 
 client.on('ready', () => {
   console.log('Bot is ready');
+  query(params);
 });
 
-var urlSplitter = /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/;
-
 client.on('message', (msg) => {
-  if (msg.content.includes('library.trust.support')){
-    
-    var match = urlSplitter.exec(msg.content);
-
-    var bookId = match[3];
-    console.log(match);
-    if(bookId){
-      msg.reply(bookId);
-    } else {
-      msg.reply('No book!');
-    }
-  } 
+  message(msg);
 });
