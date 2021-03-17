@@ -19,5 +19,7 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
+
   message(msg);
+
 });
