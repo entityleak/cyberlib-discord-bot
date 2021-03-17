@@ -39,6 +39,37 @@ async function query(params) {
   // return res.data.sheets[0].data[0].rowData;
 };
 
+async function singleQuery(params, rowNumber) {
+  const res = await spreadsheet.spreadsheets.values.get({
+    spreadsheetId: params.spreadsheetId,
+    range: `${rowNumber}:${rowNumber}`,
+    // includeGridData: params.includeGridData,
+  });
+  // console.log(res);
+  var shapedData = []
+
+  const rows = res.data.values;
+  if (rows.length) {
+    // Print columns A and E, which correspond to indices 0 and 4.
+    rows.map((row,index) => {
+      // console.log(`${row[0]}, ${row[1]},${row[3]}`);
+      // console.log(index);
+      shapedData.push({
+        id: row[0],
+        title: row[1],
+        author: row[3],
+        summary: row[13],
+      })
+    });
+  } else {
+    console.log('No data found.');
+  }
+
+  return shapedData[0]
+  // return res.data.sheets[0].data[0].rowData;
+};
+
 module.exports = {
-  query
+  query,
+  singleQuery
 }

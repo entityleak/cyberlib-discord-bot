@@ -6,7 +6,7 @@ function getBookId(msg){
     var match = urlSplitter.exec(msg.content);
 
     var bookId = match[3];
-    // console.log(match);
+    console.log(match);
     if(bookId){
       return bookId
     }
