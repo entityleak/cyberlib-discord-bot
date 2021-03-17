@@ -13,20 +13,15 @@ async function query(params) {
   const res = await spreadsheet.spreadsheets.values.get({
     spreadsheetId: params.spreadsheetId,
     range: params.ranges,
-    // includeGridData: params.includeGridData,
   });
-  // console.log(res.data.sheets[0].data[0].rowData);
   var shapedData = []
 
   const rows = res.data.values;
   if (rows.length) {
-    // Print columns A and E, which correspond to indices 0 and 4.
     rows.map((row,index) => {
-      // console.log(`${row[0]}, ${row[1]},${row[3]}`);
-      // console.log(index);
       shapedData.push({
-        rowNumber: index,
-        id: row[0],
+        row_number: index,
+        book_id: row[0],
         title: row[1],
         author: row[3]
       })
@@ -36,40 +31,78 @@ async function query(params) {
   }
 
   return shapedData
-  // return res.data.sheets[0].data[0].rowData;
 };
 
 async function singleQuery(params, rowNumber) {
-  const res = await spreadsheet.spreadsheets.values.get({
+  const res = await spreadsheet.spreadsheets.values.batchGet({
     spreadsheetId: params.spreadsheetId,
-    range: `${rowNumber}:${rowNumber}`,
-    // includeGridData: params.includeGridData,
+    ranges: ['1:1', `${rowNumber}:${rowNumber}`],
   });
-  // console.log(res);
-  var shapedData = []
+  var shapedData = {}
+  var taxonomies = []
 
-  const rows = res.data.values;
-  if (rows.length) {
-    // Print columns A and E, which correspond to indices 0 and 4.
-    rows.map((row,index) => {
-      // console.log(`${row[0]}, ${row[1]},${row[3]}`);
-      // console.log(index);
-      shapedData.push({
-        id: row[0],
-        title: row[1],
-        author: row[3],
-        summary: row[13],
-      })
-    });
-  } else {
-    console.log('No data found.');
+  res.data.valueRanges[0].values[0].forEach(e => {
+    taxonomies.push(e.toLowerCase().replace(/ /g, '_'));
+  });
+
+  const singleQueryResult = res.data.valueRanges[1].values[0];
+  
+  for (let index = 0; index < singleQueryResult.length; index++) {
+    const column = singleQueryResult[index];
+    const taxonomy = taxonomies[index];
+    
+    shapedData[taxonomy] = column;
   }
+  return shapedData;
+};
 
-  return shapedData[0]
-  // return res.data.sheets[0].data[0].rowData;
+
+async function batchQuery(params) {
+  const res = await spreadsheet.spreadsheets.values.batchGet({
+    spreadsheetId: params.spreadsheetId,
+    ranges: params.ranges,
+  });
+  var shapedData = [{}];
+  var columns = [];
+
+
+  res.data.valueRanges.forEach(e => {
+    columns.push(e.values);
+  });
+
+  var taxonomy;
+
+  columns.map( (subarray) => {
+    // console.log(subarray.length);
+
+    subarray.map((value, index) => {
+      // console.log(index, value[0]);
+      if(index === 0){
+        taxonomy = value[0].toLowerCase().replace(' ', '_');
+        console.log(taxonomy);
+      }
+
+      if(index !== 0){
+        var source = {};
+        source[taxonomy] = value[0];
+        source.row_number = index;
+
+        if(shapedData[index]){
+          shapedData[index] = Object.assign(shapedData[index], source);
+        } else {
+          shapedData.push({});
+          shapedData[index] = Object.assign(shapedData[index], source);
+        }
+      }
+    })
+  }
+  );
+
+  return shapedData
 };
 
 module.exports = {
   query,
+  batchQuery,
   singleQuery
 }
