@@ -1,7 +1,7 @@
 var urlSplitter = /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/;
 
 function message(msg){
-  if (msg.content.includes('library.trust.support')){
+  if (msg.content.includes('https://library.trust.support/')){
     
     var match = urlSplitter.exec(msg.content);
 
