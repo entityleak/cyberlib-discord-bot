@@ -1,6 +1,6 @@
 var urlSplitter = /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/;
 
-function message(msg){
+function getBookId(msg){
   if (msg.content.includes('https://library.trust.support/')){
     
     var match = urlSplitter.exec(msg.content);
@@ -8,13 +8,15 @@ function message(msg){
     var bookId = match[3];
     console.log(match);
     if(bookId){
-      msg.reply(bookId);
+      return bookId
+      // msg.reply(bookId);
     } else {
-      msg.reply('No book!');
+      return null
+      // msg.reply('No book!');
     }
   } 
 }
 
 module.exports = {
-  message
+  getBookId
 }

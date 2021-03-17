@@ -2,7 +2,7 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { query } = require('./query');
-const { message } = require('./message');
+const { getBookId } = require('./bookId');
 
 
 const params = {
@@ -13,13 +13,19 @@ const params = {
 
 client.login(process.env.BOT_TOKEN);
 
-client.on('ready', () => {
+client.on('ready', async() => {
   console.log('Bot is ready');
-  query(params);
+  const result = await query(params);
+  console.log(result);
 });
 
 client.on('message', (msg) => {
-
-  message(msg);
+  const bookId = getBookId(msg);
+  if (!bookId) {
+    return
+  } 
+  msg.reply(bookId);
+  
+  // message(msg);
 
 });

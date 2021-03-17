@@ -16,9 +16,7 @@ async function query(params) {
     includeGridData: params.includeGridData,
   });
   // console.log(res.data.sheets[0].data[0].rowData);
-
-
-  // data = res.data.sheets[0].data[0].rowData;
+  return res.data.sheets[0].data[0].rowData;
 };
 
 module.exports = {
