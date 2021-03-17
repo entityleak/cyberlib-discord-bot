@@ -7,7 +7,7 @@ const { getBookId } = require('./bookId');
 
 const params = {
   spreadsheetId: process.env.SHEET_ID,
-  ranges: 'Books!A:A',
+  ranges: 'Books!A:D',
   includeGridData: true
 };
 
