@@ -42,10 +42,7 @@ client.on('message', async(msg) => {
     }
   }
 
-  } else {
-    // msg.reply('Initial data not present')
-  }
+  } 
   
-  // message(msg);
 
 });
