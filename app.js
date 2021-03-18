@@ -10,7 +10,9 @@ const { singleEmbed } = require('./singleEmbed');
 
 var initialData;
 
-var dataTimeout = 24*60*60*1000;
+var repeatHours = 24;
+
+var dataTimeout = repeatHours*60*60*1000;
 
 const params = {
   spreadsheetId: process.env.SHEET_ID,
