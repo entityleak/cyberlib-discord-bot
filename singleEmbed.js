@@ -18,6 +18,8 @@ function singleEmbed(single, embed){
     embed.addFields({ name: 'From', value: single.from_where });
   }
 
+  embed.addFields({ name: 'Read more', value: "[Link](https://library.trust.support/"+ single.book_id +")" });
+
   embed.setFooter('https://library.trust.support/' + single.book_id);
 
   return embed
