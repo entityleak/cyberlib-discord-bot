@@ -14,6 +14,8 @@ var repeatHours = 24;
 
 var dataTimeout = repeatHours*60*60*1000;
 
+var libraryChannel;
+
 const params = {
   spreadsheetId: process.env.SHEET_ID,
   ranges: [
@@ -40,7 +42,8 @@ client.on('ready', async() => {
   
   initialData = await batchQuery(params);
   console.log('Bot is ready');
-  
+  libraryChannel = client.channels.cache.find(channel => channel.name === "library");
+  libraryChannel.send(`I'm awake!`);
   dataRefresh();
 
 });
