@@ -34,11 +34,15 @@ function bookSearch(data, msg) {
 
   }
 
-  if(results.length > 1){
+  if(results.length){
 
     var concat = [];
     results.forEach(result => {
-      concat.push(result.title);
+      if(result.primary_author){
+        concat.push(result.primary_author + ": " + "**" + result.title + "**" + " [Link](https://library.trust.support/"+ result.book_id +")");
+      } else {
+        concat.push("**" + result.title + "**" + " [Link](https://library.trust.support/"+ result.book_id +")");
+      }
     });
     concat.join(', ')
     console.log(results);
@@ -46,11 +50,7 @@ function bookSearch(data, msg) {
 
     return concat;
     
-  } else if(results.length == 1){
-    // msg.channel.send(results[0].title);
-    return results[0].title
-  }
-  else{
+  } else{
     console.log('not found');
     // msg.channel.send("We didn't find anything :persevere:");
     return "We didn't find anything :persevere:";
