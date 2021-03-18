@@ -1,8 +1,8 @@
 
 function bookSearch(data, msg) {
-  var searchTerm = msg.content.replace('!library ', '');
+  var searchTerm = msg.content.replace('!lib ', '');
   
-  if(searchTerm == '!library'){
+  if(searchTerm == '!lib'){
     return "Please enter a search term :eye:"
   }
 

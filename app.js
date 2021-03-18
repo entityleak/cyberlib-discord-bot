@@ -58,7 +58,7 @@ client.on('message', async(msg) => {
     }
 
     // random book
-    if(msg.content == '!library random'){
+    if(msg.content == '!lib random'){
       // return
       rng = Math.floor(Math.random() * Math.floor(initialData.length - 1));
       const singleResult = await getBookById(initialData, initialData[rng].book_id);
@@ -68,21 +68,21 @@ client.on('message', async(msg) => {
     }
 
     // help text
-    if(msg.content == '!library' || msg.content == '!library help' ){
+    if(msg.content == '!lib' || msg.content == '!lib help' ){
       // return
       messageEmbed.setTitle('Help');
       messageEmbed.addFields(
-        { name: 'Search', value: 'Type `!library [search]` to search the collection.' },
+        { name: 'Search', value: 'Type `!lib [search]` to search the collection.' },
         { name: 'Paste a link', value: 'Paste a link from the cybernetics library site to see more information.' },
-        { name: 'Random book', value: 'Type `!library random` to get a random book from the library.' },
+        { name: 'Random book', value: 'Type `!lib random` to get a random book from the library.' },
       );
       msg.channel.send(messageEmbed);
       return
     }
 
     // user searches
-    if(msg.content.includes('!library')){
-      messageEmbed.setTitle('Your search: ' + msg.content.replace('!library ',''));
+    if(msg.content.includes('!lib')){
+      messageEmbed.setTitle('Your search: ' + msg.content.replace('!lib ',''));
       messageEmbed.setDescription(bookSearch(initialData, msg));
       msg.reply(messageEmbed);
     }
