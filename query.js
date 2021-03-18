@@ -101,7 +101,6 @@ async function batchQuery(params) {
     })
   }
   );
-
   return shapedData
 };
 

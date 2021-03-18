@@ -1,39 +1,50 @@
 
 function bookSearch(data, msg) {
   var searchTerm = msg.content.replace('!library ', '');
+  
+  if(searchTerm == '!library'){
+    return "Please enter a search term :eye:"
+  }
+
   var i = data.length;
   var results = [];
   var resultCounter = 0;
   var resultMax = 10;
   while (i--) {
     if(data[i].summary){
+      if(resultCounter < resultMax){
       if (new RegExp("\\b"+searchTerm+"\\b",'i').test(data[i].summary)) {
-        if(resultCounter <= resultMax){
           resultCounter++;
           results.push(data[i]);
           console.log('found', searchTerm, data[i].summary);
-        }else{
-          console.log('max results reached');
-
         }
       }
     } else if (data[i].title && data[i].primary_author) {
+      if(resultCounter < resultMax){
       const substitute = [data[i].title, data[i].primary_author].join(', ');
 
       if (new RegExp("\\b"+searchTerm+"\\b",'i').test(substitute)) {
-        if(resultCounter <= resultMax){
           resultCounter++;
           results.push(data[i]);
           console.log('found', searchTerm, data[i].title);
-        }else{
-          console.log('max results reached');
+        }
+      }
+    }
 
+    if(data[i].tags){
+      if(resultCounter < resultMax){
+      if(new RegExp("\\b"+searchTerm+"\\b",'i').test(data[i].tags)){
+        // console.log('Found by tag');
+        // Check for duplicates
+          if(results.find(({book_id}) => book_id !== data[i].book_id)){
+            resultCounter++;
+            results.push(data[i]);
+          }
         }
       }
     }
   
     if(data[i].book_id == searchTerm){
-      // console.log(searchTerm);
       results = [data[i]];
     }
     
@@ -48,17 +59,23 @@ function bookSearch(data, msg) {
       } else {
         concat.push("**" + result.title + "**" + " [Link](https://library.trust.support/"+ result.book_id +")");
       }
+      
     });
+
+    if(resultCounter >= resultMax){
+      concat.push("...")
+    }
+
     concat.join(', ')
-    console.log(results);
+    // console.log(results);
     // msg.channel.send(concat);
 
     return concat;
     
-  } else{
+  } else {
     console.log('not found');
     // msg.channel.send("We didn't find anything :persevere:");
-    return "We didn't find anything :persevere:";
+    return "We didn't find anything for **"+ searchTerm +"** :persevere:";
   }
 
 }
