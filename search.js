@@ -34,9 +34,10 @@ function bookSearch(data, msg) {
     if(data[i].tags){
       if(resultCounter < resultMax){
       if(new RegExp("\\b"+searchTerm+"\\b",'i').test(data[i].tags)){
-        // console.log('Found by tag');
+        console.log('Found by tag');
         // Check for duplicates
-          if(results.find(({book_id}) => book_id !== data[i].book_id)){
+          const findDupe = results.find(({book_id}) => book_id == data[i].book_id);
+          if(!findDupe){
             resultCounter++;
             results.push(data[i]);
           }

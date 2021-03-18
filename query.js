@@ -101,6 +101,8 @@ async function batchQuery(params) {
     })
   }
   );
+
+  // console.log(shapedData[282].tags);
   return shapedData
 };
 
