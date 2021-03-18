@@ -31,10 +31,15 @@ function bookSearch(data, msg) {
         }
       }
     }
-
+  
+    if(data[i].book_id == searchTerm){
+      // console.log(searchTerm);
+      results = [data[i]];
+    }
+    
   }
 
-  if(results.length){
+  if(results.length != 0){
 
     var concat = [];
     results.forEach(result => {
