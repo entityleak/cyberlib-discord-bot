@@ -1,18 +1,22 @@
+const { singleQuery } = require('./query');
+
 var urlSplitter = /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/;
 
-function getBookId(msg){
-  if (msg.content.includes('https://library.trust.support/')){
-    
-    var match = urlSplitter.exec(msg.content);
+const params = {
+  spreadsheetId: process.env.SHEET_ID
+};
 
-    var bookId = match[3];
-    // console.log(match);
-    if(bookId){
-      return bookId
-    }
-  } 
+async function getBookById(data, msg){
+  var match = urlSplitter.exec(msg.content);
+  var bookId = match[3];
+  if(bookId){
+      const foundBook = data.find( ({book_id}) => book_id == bookId );
+      const singleResult = await singleQuery(params, foundBook.row_number);
+      console.log(singleResult);
+      return singleResult;
+  }
 }
 
 module.exports = {
-  getBookId
+  getBookById
 }

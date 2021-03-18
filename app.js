@@ -2,7 +2,7 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { query, singleQuery, batchQuery } = require('./query');
-const { getBookId } = require('./bookId');
+const { getBookById } = require('./bookId');
 const { bookSearch } = require('./search');
 
 var initialData;
@@ -30,24 +30,27 @@ client.on('ready', async() => {
 
 client.on('message', async(msg) => {
   if(initialData){
-    const bookId = getBookId(msg);
     var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
 
-    if (bookId) {
-      const foundBook = initialData.find( ({book_id}) => book_id == bookId );
-      const singleResult = await singleQuery(params, foundBook.row_number);
-      console.log(singleResult);      
-      
-      messageEmbed.setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
-      messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
+    if(msg.content.includes('https://library.trust.support/')){
 
-      // if(singleResult.summary){
-      //   msg.channel.send(singleResult.summary);
-      // } else {
-      //   msg.channel.send(singleResult.title);
-      // }
+      const singleResult = await getBookById(initialData, msg);
+
+      if(singleResult.isbn){
+        messageEmbed.setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
+      }
+      if(singleResult.primary_author){
+        messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
+      } else {
+        messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
+      }
+
       msg.channel.send(messageEmbed);
+
     }
+
+
+    
 
     if(msg.content.includes('!library')){
       messageEmbed.setTitle('Your search: ' + msg.content.replace('!library ',''));
