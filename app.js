@@ -10,6 +10,8 @@ const { singleEmbed } = require('./singleEmbed');
 
 var initialData;
 
+var dataTimeout = 24*60*60*1000;
+
 const params = {
   spreadsheetId: process.env.SHEET_ID,
   ranges: [
@@ -22,13 +24,22 @@ const params = {
   ]
 };
 
+async function dataRefresh(){
+  setInterval(async function(){ // repeat this every __ hours
+    const result = await batchQuery(params);
+    initialData = result;
+    console.log('Fresh data');
+  }, dataTimeout)
+}
+
 client.login(process.env.BOT_TOKEN);
 
 client.on('ready', async() => {
   
-  const result = await batchQuery(params);
-  initialData = result;
+  initialData = await batchQuery(params);
   console.log('Bot is ready');
+  
+  dataRefresh();
 
 });
 
