@@ -15,8 +15,7 @@ const params = {
     'D:D',
     'N:N',
     'AH:AH'
-  ],
-  includeGridData: true
+  ]
 };
 
 client.login(process.env.BOT_TOKEN);
@@ -30,10 +29,9 @@ client.on('ready', async() => {
 });
 
 client.on('message', async(msg) => {
-  const bookId = getBookId(msg);
   if(initialData){
+    const bookId = getBookId(msg);
 
-  
     if (bookId) {
       const foundBook = initialData.find( ({book_id}) => book_id == bookId );
       const singleResult = await singleQuery(params, foundBook.row_number);
@@ -49,9 +47,8 @@ client.on('message', async(msg) => {
     }
 
     if(msg.content.includes('!library')){
-      bookSearch(initialData, msg);      
+      msg.channel.send(bookSearch(initialData, msg));      
     }
-
 
   } 
   

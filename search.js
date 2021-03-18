@@ -42,14 +42,18 @@ function bookSearch(data, msg) {
     });
     concat.join(', ')
     console.log(results);
-    msg.channel.send(concat);
+    // msg.channel.send(concat);
+
+    return concat;
     
   } else if(results.length == 1){
-    msg.channel.send(results[0].title);
+    // msg.channel.send(results[0].title);
+    return results[0].title
   }
   else{
     console.log('not found');
-    msg.channel.send("We didn't find anything :persevere:");
+    // msg.channel.send("We didn't find anything :persevere:");
+    return "We didn't find anything :persevere:";
   }
 
 }
