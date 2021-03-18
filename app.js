@@ -36,20 +36,14 @@ client.on('message', async(msg) => {
   if(initialData){
     var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
 
+    // user pastes a link
     if(msg.content.includes('https://library.trust.support/')){
-
       const singleResult = await getBookById(initialData, msg);
-      console.log(singleResult);
-
       messageEmbed = singleEmbed(singleResult, messageEmbed);
-
       msg.channel.send(messageEmbed);
-
     }
 
-
-    
-
+    // user searches
     if(msg.content.includes('!library')){
       messageEmbed.setTitle('Your search: ' + msg.content.replace('!library ',''));
       messageEmbed.setDescription(bookSearch(initialData, msg));
