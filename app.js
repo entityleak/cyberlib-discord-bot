@@ -49,9 +49,33 @@ client.on('message', async(msg) => {
 
     // user pastes a link
     if(msg.content.includes('https://library.trust.support/')){
-      const singleResult = await getBookById(initialData, msg);
+      const id = msg.content.replace('https://library.trust.support/', '');
+      const singleResult = await getBookById(initialData, id);
       messageEmbed = singleEmbed(singleResult, messageEmbed);
       msg.channel.send(messageEmbed);
+    }
+
+    // random book
+    if(msg.content == '!library random'){
+      // return
+      rng = Math.floor(Math.random() * Math.floor(initialData.length - 1));
+      const singleResult = await getBookById(initialData, initialData[rng].book_id);
+      messageEmbed = singleEmbed(singleResult, messageEmbed);
+      msg.channel.send(messageEmbed);
+      return
+    }
+
+    // help text
+    if(msg.content == '!library' || msg.content == '!library help' ){
+      // return
+      messageEmbed.setTitle('Help');
+      messageEmbed.addFields(
+        { name: 'Search', value: 'Type `!library [search]` to search the collection.' },
+        { name: 'Paste a link', value: 'Paste a link from the cybernetics library site to see more information.' },
+        { name: 'Random book', value: 'Type `!library random` to get a random book from the library.' },
+      );
+      msg.channel.send(messageEmbed);
+      return
     }
 
     // user searches
@@ -60,6 +84,10 @@ client.on('message', async(msg) => {
       messageEmbed.setDescription(bookSearch(initialData, msg));
       msg.reply(messageEmbed);
     }
+
+    
+
+    
 
   } 
   

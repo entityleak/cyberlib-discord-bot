@@ -1,16 +1,14 @@
 const { singleQuery } = require('./query');
 
-var urlSplitter = /(http[s]?:\/\/)?([^\/\s]+\/)(.*)/;
 
 const params = {
   spreadsheetId: process.env.SHEET_ID
 };
 
-async function getBookById(data, msg){
-  var match = urlSplitter.exec(msg.content);
-  var bookId = match[3];
-  if(bookId){
-    const foundBook = data.find( ({book_id}) => book_id == bookId );
+async function getBookById(data, id){
+
+  if(id){
+    const foundBook = data.find( ({book_id}) => book_id == id );
     const singleResult = await singleQuery(params, foundBook.row_number);
     return singleResult;
   }
