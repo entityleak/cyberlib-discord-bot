@@ -31,23 +31,28 @@ client.on('ready', async() => {
 client.on('message', async(msg) => {
   if(initialData){
     const bookId = getBookId(msg);
+    var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
 
     if (bookId) {
       const foundBook = initialData.find( ({book_id}) => book_id == bookId );
       const singleResult = await singleQuery(params, foundBook.row_number);
-      const cover = new Discord.MessageEmbed().setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
+      console.log(singleResult);      
+      
+      messageEmbed.setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
+      messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
 
-      if(singleResult.summary){
-        msg.channel.send(singleResult.summary);
-        // msg.channel.send(cover);
-      } else {
-        msg.channel.send(singleResult.title);
-        // msg.channel.send(cover);
-      }
+      // if(singleResult.summary){
+      //   msg.channel.send(singleResult.summary);
+      // } else {
+      //   msg.channel.send(singleResult.title);
+      // }
+      msg.channel.send(messageEmbed);
     }
 
     if(msg.content.includes('!library')){
-      msg.channel.send(bookSearch(initialData, msg));      
+      messageEmbed.setTitle('Your search: ' + msg.content.replace('!library ',''));
+      messageEmbed.setDescription(bookSearch(initialData, msg));
+      msg.reply(messageEmbed);
     }
 
   } 
