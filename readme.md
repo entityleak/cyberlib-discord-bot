@@ -1,0 +1,3 @@
+# Cybernetics Library Discord Bot
+
+Coming sooon....
