@@ -12,7 +12,6 @@ async function getBookById(data, msg){
   if(bookId){
     const foundBook = data.find( ({book_id}) => book_id == bookId );
     const singleResult = await singleQuery(params, foundBook.row_number);
-    console.log(singleResult);
     return singleResult;
   }
 }

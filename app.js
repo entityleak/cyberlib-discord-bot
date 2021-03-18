@@ -5,6 +5,9 @@ const { query, singleQuery, batchQuery } = require('./query');
 const { getBookById } = require('./bookId');
 const { bookSearch } = require('./search');
 
+const { singleEmbed } = require('./singleEmbed');
+
+
 var initialData;
 
 const params = {
@@ -35,15 +38,9 @@ client.on('message', async(msg) => {
     if(msg.content.includes('https://library.trust.support/')){
 
       const singleResult = await getBookById(initialData, msg);
+      console.log(singleResult);
 
-      if(singleResult.isbn){
-        messageEmbed.setImage('http://covers.openlibrary.org/b/isbn/' + singleResult.isbn + '-L.jpg'); 
-      }
-      if(singleResult.primary_author){
-        messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
-      } else {
-        messageEmbed.setTitle(singleResult.title).setAuthor(singleResult.primary_author);
-      }
+      messageEmbed = singleEmbed(singleResult, messageEmbed);
 
       msg.channel.send(messageEmbed);
 
