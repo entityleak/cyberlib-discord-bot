@@ -104,6 +104,7 @@ client.on('message', async(msg) => {
     if(msg.content == '!lib here'){
       libraryChannel = msg.channel;
       libraryChannel.send('`Moving library channel`');
+      return
     }
 
     // user searches
