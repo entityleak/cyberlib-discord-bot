@@ -63,6 +63,7 @@ client.on('ready', async() => {
 });
 
 client.on('message', async(msg) => {
+
   if(initialData){
     var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
 
@@ -94,9 +95,15 @@ client.on('message', async(msg) => {
         { name: 'Search', value: 'Type `!lib [search term]` to search the collection.' },
         { name: 'Paste a link', value: 'Paste a link from the cybernetics library site to see more information.' },
         { name: 'Random book', value: 'Type `!lib random` to get a random book from the library.' },
+        { name: 'Move the bot', value: 'Type `!lib here` to tell the bot to move to a new channel (for book of the day posts, etc).' },
       );
       msg.channel.send(messageEmbed);
       return
+    }
+
+    if(msg.content == '!lib here'){
+      libraryChannel = msg.channel;
+      libraryChannel.send('`Moving library channel`');
     }
 
     // user searches
