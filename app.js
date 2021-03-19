@@ -7,12 +7,13 @@ const { bookSearch } = require('./search');
 
 const { singleEmbed } = require('./singleEmbed');
 
-
 var initialData;
 
 var repeatHours = 24;
-
 var dataTimeout = repeatHours*60*60*1000;
+
+var randomBookRepeatTimerHours = 24;
+var randomBookRepeatTimer = randomBookRepeatTimerHours*60*60*1000;
 
 var libraryChannel;
 
@@ -36,6 +37,18 @@ async function dataRefresh(){
   }, dataTimeout)
 }
 
+async function postRandom(){
+  setInterval(async function(){ // repeat this every __ hours
+    var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
+    rng = Math.floor(Math.random() * Math.floor(initialData.length - 1));
+    const singleResult = await getBookById(initialData, initialData[rng].book_id);
+    messageEmbed = singleEmbed(singleResult, messageEmbed);
+    messageEmbed.setAuthor('Book of the day');
+    libraryChannel.send(messageEmbed);
+    console.log('Random book of the day', singleResult.title);
+  }, randomBookRepeatTimer);
+}
+
 client.login(process.env.BOT_TOKEN);
 
 client.on('ready', async() => {
@@ -45,6 +58,7 @@ client.on('ready', async() => {
   libraryChannel = client.channels.cache.find(channel => channel.name === "library");
   libraryChannel.send(`I'm awake!`);
   dataRefresh();
+  postRandom();
 
 });
 
@@ -58,6 +72,7 @@ client.on('message', async(msg) => {
       const singleResult = await getBookById(initialData, id);
       messageEmbed = singleEmbed(singleResult, messageEmbed);
       msg.channel.send(messageEmbed);
+      console.log('Find by library URL link');
     }
 
     // random book
@@ -67,6 +82,7 @@ client.on('message', async(msg) => {
       const singleResult = await getBookById(initialData, initialData[rng].book_id);
       messageEmbed = singleEmbed(singleResult, messageEmbed);
       msg.channel.send(messageEmbed);
+      console.log('Random book');
       return
     }
 
@@ -75,7 +91,7 @@ client.on('message', async(msg) => {
       // return
       messageEmbed.setTitle('Help');
       messageEmbed.addFields(
-        { name: 'Search', value: 'Type `!lib [search]` to search the collection.' },
+        { name: 'Search', value: 'Type `!lib [search term]` to search the collection.' },
         { name: 'Paste a link', value: 'Paste a link from the cybernetics library site to see more information.' },
         { name: 'Random book', value: 'Type `!lib random` to get a random book from the library.' },
       );
@@ -89,11 +105,6 @@ client.on('message', async(msg) => {
       messageEmbed.setDescription(bookSearch(initialData, msg));
       msg.reply(messageEmbed);
     }
-
-    
-
-    
-
   } 
   
 
