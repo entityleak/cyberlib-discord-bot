@@ -49,10 +49,11 @@ async function postRandom(){
     console.log('Random book of the day', singleResult.title);
 
     for (let i = 0; i < libraryChannels.length; i++) {
-      const channel = libraryChannels[i];
-      if(client.channels.cache.get(channel.channel_id)){
-        console.log('Random book sent to' + channel.server_name);
+      const channelFromSheets = libraryChannels[i];
+      if(client.channels.cache.get(channelFromSheets.channel_id)){
+        var channel = client.channels.cache.get(channelFromSheets.channel_id);
         channel.send(messageEmbed);
+        console.log('Random book sent to' + channel.server_name);
       }
     }
     
