@@ -106,8 +106,33 @@ async function batchQuery(params) {
   return shapedData
 };
 
+async function discordQuery(params) {
+  const res = await spreadsheet.spreadsheets.values.get({
+    spreadsheetId: params.spreadsheetId,
+    range: 'Bot!A:B'
+  });
+  var shapedData = []
+
+  const rows = res.data.values;
+  if (rows.length) {
+    rows.map((row,index) => {
+      shapedData.push({
+        channel_id: row[0],
+        server_name: row[1],
+      })
+    });
+  } else {
+    console.log('No data found.');
+  }
+
+  // console.log(shapedData);
+
+  return shapedData
+};
+
 module.exports = {
   query,
   batchQuery,
-  singleQuery
+  singleQuery,
+  discordQuery
 }

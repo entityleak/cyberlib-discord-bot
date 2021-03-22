@@ -1,7 +1,7 @@
 require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { query, singleQuery, batchQuery } = require('./query');
+const { query, singleQuery, batchQuery, discordQuery} = require('./query');
 const { getBookById } = require('./bookId');
 const { bookSearch } = require('./search');
 
@@ -15,7 +15,7 @@ var dataTimeout = repeatHours*60*60*1000;
 var randomBookRepeatTimerHours = 24;
 var randomBookRepeatTimer = randomBookRepeatTimerHours*60*60*1000;
 
-var libraryChannel;
+var libraryChannels;
 
 const params = {
   spreadsheetId: process.env.SHEET_ID,
@@ -39,27 +39,35 @@ async function dataRefresh(){
 
 async function postRandom(){
   setInterval(async function(){ // repeat this every __ hours
+
     var messageEmbed = new Discord.MessageEmbed().setColor('#000000');
     rng = Math.floor(Math.random() * Math.floor(initialData.length - 1));
     const singleResult = await getBookById(initialData, initialData[rng].book_id);
     messageEmbed = singleEmbed(singleResult, messageEmbed);
     messageEmbed.setAuthor('Book of the day');
-    libraryChannel.send(messageEmbed);
+
     console.log('Random book of the day', singleResult.title);
+
+    for (let i = 0; i < libraryChannels.length; i++) {
+      const channel = libraryChannels[i];
+      if(client.channels.cache.get(channel.channel_id)){
+        console.log('Random book sent to' + channel.server_name);
+        channel.send(messageEmbed);
+      }
+    }
+    
   }, randomBookRepeatTimer);
 }
 
 client.login(process.env.BOT_TOKEN);
 
 client.on('ready', async() => {
-  
   initialData = await batchQuery(params);
-  console.log('Bot is ready');
-  libraryChannel = client.channels.cache.find(channel => channel.name === "library");
-  libraryChannel.send(`I'm awake!`);
+  libraryChannels = await discordQuery(params);
   dataRefresh();
   postRandom();
-
+  
+  console.log('Bot is ready');
 });
 
 client.on('message', async(msg) => {
@@ -94,16 +102,9 @@ client.on('message', async(msg) => {
       messageEmbed.addFields(
         { name: 'Search', value: 'Type `!lib [search term]` to search the collection.' },
         { name: 'Paste a link', value: 'Paste a link from the cybernetics library site to see more information.' },
-        { name: 'Random book', value: 'Type `!lib random` to get a random book from the library.' },
-        { name: 'Move the bot', value: 'Type `!lib here` to tell the bot to move to a new channel (for book of the day posts, etc).' },
+        { name: 'Random book', value: 'Type `!lib random` to get a random book from the library.' }
       );
       msg.channel.send(messageEmbed);
-      return
-    }
-
-    if(msg.content == '!lib here'){
-      libraryChannel = msg.channel;
-      libraryChannel.send('`Moving library channel`');
       return
     }
 
